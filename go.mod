@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/go-stomp/stomp v2.1.4+incompatible
+	gocv.io/x/gocv v0.30.0
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 )
 
