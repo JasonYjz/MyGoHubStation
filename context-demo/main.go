@@ -20,7 +20,8 @@ func main() {
 
 	fmt.Println("start main function.")
 	ctx, cancelFunc := context.WithCancel(context.Background())
-	go SlowOperation(ctx)
+	go SlowOperation1(ctx)
+	go SlowOperation2(ctx)
 
 	fmt.Println("sleep 1 second.")
 	time.Sleep(1 * time.Second)
@@ -31,8 +32,8 @@ func main() {
 	time.Sleep(3)
 }
 
-func SlowOperation(ctx context.Context) {
-	fmt.Println("start slow operation.")
+func SlowOperation1(ctx context.Context) {
+	fmt.Println("start slow operation1.")
 	done := make(chan int, 1)
 	go func() { // 模拟慢操作
 		dur := time.Duration(5) * time.Second
@@ -42,8 +43,25 @@ func SlowOperation(ctx context.Context) {
 
 	select {
 	case <-ctx.Done():
-		fmt.Println("SlowOperation timeout:", ctx.Err())
+		fmt.Println("SlowOperation1 timeout:", ctx.Err())
 	case <-done:
-		fmt.Println("Complete work")
+		fmt.Println("Complete work 1 ")
+	}
+}
+
+func SlowOperation2(ctx context.Context) {
+	fmt.Println("start slow operation2.")
+	done := make(chan int, 1)
+	go func() { // 模拟慢操作
+		dur := time.Duration(5) * time.Second
+		time.Sleep(dur)
+		done <- 1
+	}()
+
+	select {
+	case <-ctx.Done():
+		fmt.Println("SlowOperation2 timeout:", ctx.Err())
+	case <-done:
+		fmt.Println("Complete work 2")
 	}
 }
