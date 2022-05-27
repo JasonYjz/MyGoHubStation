@@ -6,57 +6,44 @@ import (
 	"time"
 )
 
-func sleepRandom_1(stopChan chan struct{}) {
-	i := 0
-	for {
-		time.Sleep(1 * time.Second)
-		fmt.Printf("This is sleep Random 1: %d\n", i)
-
-		i++
-		if i == 5 {
-			fmt.Println("cancel sleep random 1")
-			stopChan <- struct{}{}
-			break
-		}
-	}
-}
-
-func sleepRandom_2(ctx context.Context) {
-	i := 0
-	for {
-		time.Sleep(1 * time.Second)
-		fmt.Printf("This is sleep Random 2: %d\n", i)
-		i++
-
-		select {
-		case <-ctx.Done():
-			fmt.Printf("Why? %s\n", ctx.Err())
-			fmt.Println("cancel sleep random 2")
-			return
-		default:
-		}
-	}
-}
-
 func main() {
+	//ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
+	//defer cancel()
+	//go SlowOperation(ctx)
+	//go func() {
+	//	for {
+	//		time.Sleep(300 * time.Millisecond)
+	//		fmt.Println("goroutine:", runtime.NumGoroutine())
+	//	}
+	//}()
+	//time.Sleep(4 * time.Second)
 
-	ctxParent, cancelParentFunc := context.WithCancel(context.Background())
-	ctxChild, _ := context.WithCancel(ctxParent)
+	fmt.Println("start main function.")
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	go SlowOperation(ctx)
 
-	stopChan := make(chan struct{})
+	fmt.Println("sleep 1 second.")
+	time.Sleep(1 * time.Second)
 
-	go sleepRandom_1(stopChan)
-	go sleepRandom_2(ctxChild)
+	fmt.Println("do cancel func.")
+	cancelFunc()
+
+	time.Sleep(3)
+}
+
+func SlowOperation(ctx context.Context) {
+	fmt.Println("start slow operation.")
+	done := make(chan int, 1)
+	go func() { // 模拟慢操作
+		dur := time.Duration(5) * time.Second
+		time.Sleep(dur)
+		done <- 1
+	}()
 
 	select {
-	case <- stopChan:
-		fmt.Println("stopChan received")
-	}
-	cancelParentFunc()
-
-	for {
-		time.Sleep(1 * time.Second)
-		fmt.Println("Continue...")
+	case <-ctx.Done():
+		fmt.Println("SlowOperation timeout:", ctx.Err())
+	case <-done:
+		fmt.Println("Complete work")
 	}
 }
-

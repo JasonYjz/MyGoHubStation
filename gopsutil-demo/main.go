@@ -8,7 +8,6 @@ import (
 	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/net"
-	"go-hub-station/gopsutil-demo/cmd"
 	"time"
 )
 
@@ -26,12 +25,12 @@ func main() {
 
 	//getCpuInfo()
 	//getCpuLoad()
-	getDiskInfo()
+	//getDiskInfo()
 	//getHostInfo()
 	//getMemInfo()
-	//getNetInfo()
+	getNetInfo()
 	fmt.Println("#########################")
-	getDiskUsage(cmd.C.Path)
+	//getDiskUsage(cmd.C.Path)
 
 }
 
