@@ -5,6 +5,11 @@ import (
 	"github.com/dgraph-io/ristretto"
 )
 
+type Person struct {
+	Name string
+	Age int
+	Addr string
+}
 
 func main() {
 	// type Config struct {
@@ -55,8 +60,14 @@ func main() {
 		panic(err)
 	}
 
+	p := Person{
+		Name: "Jason",
+		Age:  36,
+		Addr: "Chengdu",
+	}
+
 	// set a value with a cost of 1
-	cache.Set("key", "value", 1)
+	cache.Set("key", p, 1)
 
 	// wait for value to pass through buffers
 	cache.Wait()
@@ -65,6 +76,8 @@ func main() {
 	if !found {
 		panic("missing value")
 	}
-	fmt.Println(value)
+	person := value.(Person)
+	fmt.Printf("Name:%s, Age:%d, Addr:%s\n", person.Name, person.Age, person.Addr)
+	//fmt.Println(value)
 	cache.Del("key")
 }
