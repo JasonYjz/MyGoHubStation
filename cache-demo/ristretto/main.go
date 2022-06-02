@@ -10,7 +10,7 @@ type Person struct {
 	Age int
 	Addr string
 }
-
+var persons = make([]Person, 2)
 func main() {
 	// type Config struct {
 	//    // 可以简单理解成key的数量，他是用来保存key被点击次数的，但实际数量并不是这个设置的值，而是最靠近并且大于或等于该值的2的n次方值减1
@@ -66,8 +66,11 @@ func main() {
 		Addr: "Chengdu",
 	}
 
+	persons[0] = p
+	persons[1] = p
+
 	// set a value with a cost of 1
-	cache.Set("key", p, 1)
+	cache.Set("key", persons, 1)
 
 	// wait for value to pass through buffers
 	cache.Wait()
@@ -76,8 +79,9 @@ func main() {
 	if !found {
 		panic("missing value")
 	}
-	person := value.(Person)
-	fmt.Printf("Name:%s, Age:%d, Addr:%s\n", person.Name, person.Age, person.Addr)
+	pers := value.([]Person)
+	fmt.Printf("1: Name:%s, Age:%d, Addr:%s\n", pers[0].Name, pers[0].Age, pers[0].Addr)
+	fmt.Printf("2: Name:%s, Age:%d, Addr:%s\n", pers[1].Name, pers[1].Age, pers[1].Addr)
 	//fmt.Println(value)
 	cache.Del("key")
 }
