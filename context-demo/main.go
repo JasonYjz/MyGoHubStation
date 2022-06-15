@@ -28,7 +28,10 @@ func main() {
 	go SlowOperation(ctx2)
 
 	defer cancelFunc1()
-	defer cancelFunc2()
+	defer func() {
+		cancelFunc2()
+		fmt.Println("execute cancelFunc2")
+	}()
 
 	fmt.Println("main start to sleep 5s")
 	time.Sleep(5 * time.Second)
