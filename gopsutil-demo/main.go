@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
@@ -8,6 +9,10 @@ import (
 	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/net"
+	"os"
+	"strconv"
+	"strings"
+	"syscall"
 	"time"
 )
 
@@ -17,7 +22,7 @@ type person struct {
 }
 
 type students struct {
-	id string `json:"id"`
+	id  string                 `json:"id"`
 	per map[string]interface{} `json:"per"`
 }
 
@@ -28,7 +33,8 @@ func main() {
 	//getDiskInfo()
 	//getHostInfo()
 	//getMemInfo()
-	getNetInfo()
+	//getNetInfo()
+	getBootTime()
 	fmt.Println("#########################")
 	//getDiskUsage(cmd.C.Path)
 
@@ -50,20 +56,82 @@ func getCpuInfo() {
 	}
 }
 
-func getCpuLoad()  {
+func getCpuLoad() {
 	info, _ := load.Avg()
-	fmt.Printf("%v\n",info)
+	fmt.Printf("%v\n", info)
 }
 
-func getMemInfo()  {
+func getMemInfo() {
 	memInfo, _ := mem.VirtualMemory()
-	fmt.Printf("mem info:%v\n",memInfo)
+	fmt.Printf("mem info:%v\n", memInfo)
 }
 
 func getHostInfo() {
 	fmt.Printf("start to get host info.")
 	hInfo, _ := host.Info()
 	fmt.Printf("host info:%v uptime:%v boottime:%v\n", hInfo, hInfo.Uptime, hInfo.BootTime)
+}
+
+func getBootTime() {
+	timestamp, _ := host.BootTime()
+	t := time.Unix(int64(timestamp), 0)
+	fmt.Println(t.Local().Format("2006-01-02 15:04:05"))
+
+	sys := syscall.Sysinfo_t{}
+	syscall.Sysinfo(&sys)
+	Uptime := time.Now().Unix() - sys.Uptime
+
+	t = time.Unix(int64(Uptime), 0)
+	fmt.Println(t.Local().Format("2006-01-02 15:04:05"))
+
+	t = ProcessUptime()
+	fmt.Println(t.Local().Format("2006-01-02 15:04:05"))
+
+}
+
+func ProcessUptime() (ts time.Time) {
+	lines, err := ReadLinesOffsetN("/proc/uptime", 0, -1)
+	if err != nil {
+		fmt.Println("failed to read lines offset n")
+		return
+	}
+
+	if len(lines) != 1 {
+		fmt.Println("wrong uptime format")
+		return
+	}
+	f := strings.Fields(lines[0])
+	b, err := strconv.ParseFloat(f[0], 64)
+	if err != nil {
+		fmt.Println("parse float failed")
+		return
+	}
+	timestamp := uint64(time.Now().Unix()) - uint64(b)
+	return time.Unix(int64(timestamp), 0)
+}
+
+func ReadLinesOffsetN(filename string, offset uint, n int) ([]string, error) {
+	f, err := os.Open(filename)
+	if err != nil {
+		return []string{""}, err
+	}
+	defer f.Close()
+
+	var ret []string
+
+	r := bufio.NewReader(f)
+	for i := 0; i < n+int(offset) || n < 0; i++ {
+		line, err := r.ReadString('\n')
+		if err != nil {
+			break
+		}
+		if i < int(offset) {
+			continue
+		}
+		ret = append(ret, strings.Trim(line, "\n"))
+	}
+
+	return ret, nil
 }
 
 // disk info
@@ -122,7 +190,6 @@ func printTmp() {
 	h = make([]person, 1)
 	fmt.Println(fmt.Sprintf("variable address:%p", h))
 	fmt.Println(fmt.Sprintf("len(h) is %d", len(h)))
-
 
 	stu := &students{}
 	fmt.Printf("variable address:%p\n", stu)
