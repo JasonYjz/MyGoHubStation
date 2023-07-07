@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>RTSP Stream Rendering</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ffmpeg.js@latest"></script>
+</head>
+<body>
+<video id="videoElement" controls autoplay></video>
+
+<script>
+    // 设置FFmpeg.js和hls.js的Web Worker路径
+    const workerPath = 'https://cdn.jsdelivr.net/npm/ffmpeg.js@latest/ffmpeg-worker.min.js';
+    ffmpegjs.FS.workerPath = workerPath;
+    const hlsWorkerPath = 'https://cdn.jsdelivr.net/npm/hls.js@latest/build/worker/hls.js';
+    const videoElement = document.getElementById('videoElement');
+
+    // RTSP流转换为HLS流
+    async function convertRTSPtoHLS(rtspUrl) {
+        // 初始化FFmpeg.js
+        await ffmpegjs.load();
+
+        // 执行FFmpeg.js命令将RTSP流转换为HLS流
+        const command = `-i ${rtspUrl} -c:v copy -c:a copy -hls_time 10 -hls_list_size 6 -hls_flags delete_segments -f hls -`;
+        const result = await ffmpegjs.run(command.split(' '));
+
+        // 获取HLS流的URL
+        const hlsUrl = URL.createObjectURL(new Blob([result.data.buffer], { type: 'application/x-mpegURL' }));
+
+        return hlsUrl;
+    }
+
+    // 使用hls.js播放HLS流
+    function playHLSStream(hlsUrl) {
+        if (Hls.isSupported()) {
+            const hls = new Hls({ worker: hlsWorkerPath });
+            hls.loadSource(hlsUrl);
+            hls.attachMedia(videoElement);
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                videoElement.play();
+            });
+        }
+        else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+            videoElement.src = hlsUrl;
+            videoElement.addEventListener('loadedmetadata', function () {
+                videoElement.play();
+            });
+        }
+    }
+
+    // 在页面加载完成后开始处理流
+    window.addEventListener('DOMContentLoaded', async function () {
+        const rtspUrl = 'rtsp://your-rtsp-url';
+        const hlsUrl = await convertRTSPtoHLS(rtspUrl);
+        playHLSStream(hlsUrl);
+    });
+</script>
+</body>
+</html>

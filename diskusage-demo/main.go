@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-hub-station/diskusage-demo/cmd"
+	"io/ioutil"
 	"syscall"
 )
 
@@ -33,8 +33,47 @@ const (
 )
 
 func main() {
-	disk := DiskUsage(cmd.C.Path)
-	fmt.Printf("All: %.2f GB\n", float64(disk.All)/float64(GB))
-	fmt.Printf("Used: %.2f GB\n", float64(disk.Used)/float64(GB))
-	fmt.Printf("Free: %.2f GB\n", float64(disk.Free)/float64(GB))
+	//disk := DiskUsage("/")
+	//fmt.Printf("All: %.2f GB\n", float64(disk.All)/float64(GB))
+	//fmt.Printf("Used: %.2f GB\n", float64(disk.Used)/float64(GB))
+	//fmt.Printf("Free: %.2f GB\n", float64(disk.Free)/float64(GB))
+	//
+	/////media/sdg1
+	//upan := DiskUsage("/media/sdg1")
+	//fmt.Printf("All: %.2f GB\n", float64(upan.All)/float64(GB))
+	//fmt.Printf("Used: %.2f GB\n", float64(upan.Used)/float64(GB))
+	//fmt.Printf("Free: %.2f GB\n", float64(upan.Free)/float64(GB))
+	//COMMAND := "df -h |grep -w '/media\\|/' |awk '{print $2,$3,$4,$5,$6}'"
+
+	//timeout, cancelFunc := context.WithTimeout(context.Background(), 1*time.Second)
+	//defer cancelFunc()
+	////CommandContext
+	////output, err := exec.Command(COMMAND).Output()
+	////output, err := exec.Command("df", "-h", "|", "grep", "-w", "/media\\|/'").Output()
+	////output, err := exec.Command("/bin/sh", "-c", "df -h |grep -w '/media\\|/' |awk '{print $2,$3,$4,$5,$6}'").Output()
+	//output, err := exec.CommandContext(timeout, "/bin/sh", "-c", "df -h |grep -w '/media\\|/' |awk '{print $2,$3,$4,$5,$6}'").Output()
+	//if err != nil {
+	//	fmt.Println(err.Error())
+	//}
+	//
+	//fmt.Println(string(output))
+
+	fmt.Printf("%v\n", WalkDir("/media"))
+
+}
+
+func WalkDir(dir string) []string {
+
+	var files []string
+	fileInfos, _ := ioutil.ReadDir(dir)
+
+	for _, info := range fileInfos {
+		if info.IsDir() {
+
+			fmt.Println(info.Name())
+			files = append(files, info.Name())
+		}
+	}
+
+	return files
 }

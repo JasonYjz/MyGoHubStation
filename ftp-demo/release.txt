@@ -1,0 +1,6 @@
+{
+    "Id": "myaiapp3",
+    "Name": "ai-app3", 
+    "Version": "1.3.0", 
+    "Description": "测试而已003"
+}

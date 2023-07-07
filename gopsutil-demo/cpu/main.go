@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"github.com/shirou/gopsutil/cpu"
+	"os/exec"
 	"time"
 )
 
 func main() {
 	//printCpuTimes()
-	getCpuInfo()
+	//getCpuInfo()
+
+	exec.Command("/bin/bash", "")
 }
 
 // 获取Cpu方面的信息
@@ -31,9 +34,7 @@ func getCpuInfo() {
 	}
 	// CPU使用率
 	for {
-		percent, _ := cpu.Percent(5 * time.Second, true)
+		percent, _ := cpu.Percent(5*time.Second, true)
 		fmt.Println("cpu percent:%v", percent)
 	}
 }
-
-

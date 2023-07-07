@@ -11,6 +11,8 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-stomp/stomp v2.1.4+incompatible
 	github.com/golang/glog v1.0.0
+	github.com/gorilla/websocket v1.5.0
+	github.com/jlaffaye/ftp v0.2.0
 	github.com/muesli/cache2go v0.0.0-20211005105910-8e46465cca4a
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/segmentio/kafka-go v0.4.31
@@ -18,6 +20,7 @@ require (
 	gocv.io/x/gocv v0.30.0
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 	google.golang.org/grpc v1.43.0
+	google.golang.org/protobuf v1.28.0
 )
 
 require (
@@ -34,6 +37,8 @@ require (
 	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -60,6 +65,5 @@ require (
 	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

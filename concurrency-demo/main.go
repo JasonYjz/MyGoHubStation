@@ -21,7 +21,7 @@ func main() {
 
 func doSomething(grname string)  {
 	for{
-		fmt.Println("来了一车",grname)
+		fmt.Println("来了一车",grname)广播
 		time.Sleep(time.Second)
 	}
 }

@@ -26,19 +26,19 @@ import (
 
 type result struct {
 	//'id,result,error'
-	Id int `json:"id"`
+	Id     int    `json:"id"`
 	Result string `json:"result"`
-	Error string `json:"error"`
+	Error  string `json:"error"`
 }
 
 type data struct {
-	Id int `json:"id"`
-	Method string `json:"method"`
+	Id     int      `json:"id"`
+	Method string   `json:"method"`
 	Params []string `json:"params"`
 }
 
 func main() {
-	conn, err := net.Dial("tcp", "192.168.110.78:43329")
+	conn, err := net.Dial("tcp", "127.0.0.1:43563")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,10 +50,11 @@ func main() {
 
 	d := data{
 		Id:     1,
-		Method: "getU3VCameraStatus",
+		Method: "getPlatformInfo",
 		Params: ll,
 	}
 
+	fmt.Printf("data:%v \n", d)
 	reqStr, err := json.Marshal(d)
 	if err != nil {
 		fmt.Println("json err:", err)
