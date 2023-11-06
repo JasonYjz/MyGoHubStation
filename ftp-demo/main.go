@@ -37,10 +37,10 @@ func main() {
 
 	fmt.Printf("current dir:%v\n", currentDir)
 
-	err = conn.ChangeDir("upload")
+	err = conn.ChangeDir("upload-demo")
 	if err != nil {
 		fmt.Printf("ready to make dir.\n")
-		conn.MakeDir("upload")
+		conn.MakeDir("upload-demo")
 		return
 	}
 

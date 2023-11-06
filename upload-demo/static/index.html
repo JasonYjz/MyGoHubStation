@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>文件上传示例</title>
+    <style>
+        #progress-bar {
+            width: 300px;
+            height: 20px;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        #progress {
+            width: 0;
+            height: 100%;
+            background-color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+<h1>文件上传示例</h1>
+<form id="upload-form" enctype="multipart/form-data">
+    <input type="file" name="file" id="file-input" required>
+    <button type="submit">上传文件</button>
+</form>
+<div id="progress-bar">
+    <div id="progress"></div>
+</div>
+
+<script>
+    var socket = new WebSocket("ws://localhost:8080/upload");
+    var progressBar = document.getElementById("progress");
+
+    document.getElementById("upload-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var fileInput = document.getElementById("file-input");
+        var file = fileInput.files[0];
+        var formData = new FormData();
+        formData.append("file", file);
+
+        socket.onmessage = function(event) {
+            var progress = parseFloat(event.data);
+            progressBar.style.width = progress + "%";
+        };
+
+        socket.onclose = function() {
+            progressBar.style.width = "100%";
+        };
+
+        socket.onopen = function() {
+            socket.send(formData);
+        };
+    });
+</script>
+</body>
+</html>

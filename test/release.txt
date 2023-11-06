@@ -1,0 +1,24 @@
+{
+  "id": "744cb70e953a4d988407bb5251c9d7fd",
+  "name": "ai-app1",
+  "version": "1.5.0",
+  "description": "测试而已",
+  "models": [
+    {
+      "id": 0,  // 来源于AIC生成的model包中modelInfo.json中id字段
+      "version": "R1",
+      "name": "a.dlc",
+      "description": "屏蔽罩检测",
+      "type": "Location",
+      "timestamp": "20230516121314"
+    },
+    {
+      "id": 1,
+      "version": "R1",
+      "name": "b.dlc",
+      "description": "屏蔽罩检测",
+      "type": "Segment",
+      "timestamp": "20230516121314"
+    }
+  ]
+}

@@ -32,10 +32,12 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 	// 启动 FFmpeg 进行转码
-	cmd := exec.Command("ffmpeg",
+	//cmd := exec.Command("ffmpeg",
+	cmd := exec.Command("C:\\Program Files\\ffmpeg-6.0\\bin\\ffmpeg",
 		//"-i", "input.mp4", // 输入文件
 		"-rtsp_transport", "tcp",
-		"-i", "rtsp://admin:aidlux123@192.168.110.234:554/h264/ch1/main/av_stream", // 输入文件
+		//"-i", "rtsp://admin:aidlux123@192.168.110.234:554/h264/ch1/main/av_stream", // 输入文件
+		"-i", "rtsp://192.168.110.153:1935", // 输入文件
 		//"-c:v", "libx264",
 		//"-preset", "ultrafast",
 		//"-tune", "zerolatency",
